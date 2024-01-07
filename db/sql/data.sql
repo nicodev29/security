@@ -5,5 +5,5 @@ insert into users (username, password, enabled) VALUES
                                                     ('user', 'user', true);
 
 insert into authorities (username, authority) VALUES
-                                                  ('ADMIN', 'admin'),
-                                                  ('USER', 'user');
+                                                  ('admin', 'admin'),
+                                                  ('user', 'user');
