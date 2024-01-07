@@ -1,9 +1,5 @@
 -----------data-------------
 
-insert into users (username, password, enabled) VALUES
-                                                    ('admin', 'admin', true),
-                                                    ('user', 'user', true);
-
-insert into authorities (username, authority) VALUES
-                                                  ('admin', 'admin'),
-                                                  ('user', 'user');
+insert into customers (email, password, rol) VALUES
+                           ('Admin@gmail.com', 'password','admin'),
+                           ('User@gmail.com','password' ,'user');
