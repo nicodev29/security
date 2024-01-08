@@ -1,6 +1,5 @@
 package com.example.basicjwtoauth2.security;
 
-import com.example.basicjwtoauth2.models.Customer;
 import com.example.basicjwtoauth2.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
