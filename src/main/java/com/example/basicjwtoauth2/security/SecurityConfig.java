@@ -1,25 +1,43 @@
 package com.example.basicjwtoauth2.security;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
+    private final CustomerUserDetails customerUserDetails;
+    public SecurityConfig(CustomerUserDetails customerUserDetails) {
+        this.customerUserDetails = customerUserDetails;
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth ->
-                auth.requestMatchers("/about_us","/welcome").permitAll()
-                        .requestMatchers("/balance","/account","/cards","/loans").hasAuthority("admin")
+        http.authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/loans","/account").hasAnyAuthority("VIEW_ACCOUNT", "VIEW_LOANS")
+                        .requestMatchers("/balance","/cards").hasAnyAuthority("VIEW_BALANCE", "VIEW_CARDS")
+                        .requestMatchers("/about_us", "/welcome").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
+
+        http.userDetailsService(customerUserDetails);
+
         return http.build();
     }
+
+
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -34,6 +52,21 @@ public class SecurityConfig {
             }
         };
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+
+            var config = new CorsConfiguration();
+            config.setAllowedOrigins(List.of("http://localhost:4200"));
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            config.setAllowedHeaders(List.of("*"));
+
+            var source = new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", config);
+            return source;
+    }
+
+
 
 //    @Bean
 //    InMemoryUserDetailsManager userDetailsManager() {

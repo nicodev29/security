@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -20,8 +21,7 @@ public class Customer implements Serializable {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "rol")
-    private String role;
-
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    private List<Role> roles;
 
 }
