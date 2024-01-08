@@ -47,18 +47,18 @@ public class SecurityConfig {
         return new JdbcUserDetailsManager(dataSource);
     } */
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence charSequence) {
-                return charSequence.toString();
-            }
-            @Override
-            public boolean matches(CharSequence charSequence, String s) {
-                return true;
-            }
-        };
-    }
+//    @Bean
+//    PasswordEncoder passwordEncoder() {
+//        return new PasswordEncoder() {
+//            @Override
+//            public String encode(CharSequence charSequence) {
+//                return charSequence.toString();
+//            }
+//            @Override
+//            public boolean matches(CharSequence charSequence, String s) {
+//                return true;
+//            }
+//        };
+//    }
 
 }
