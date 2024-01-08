@@ -21,6 +21,20 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new PasswordEncoder() {
+            @Override
+            public String encode(CharSequence charSequence) {
+                return charSequence.toString();
+            }
+            @Override
+            public boolean matches(CharSequence charSequence, String s) {
+                return true;
+            }
+        };
+    }
+
 //    @Bean
 //    InMemoryUserDetailsManager userDetailsManager() {
 //
@@ -41,19 +55,5 @@ public class SecurityConfig {
 //    UserDetailsService userDetailsService (DataSource dataSource){
 //        return new JdbcUserDetailsManager(dataSource);
 //    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence charSequence) {
-                return charSequence.toString();
-            }
-            @Override
-            public boolean matches(CharSequence charSequence, String s) {
-                return true;
-            }
-        };
-    }
 
 }
