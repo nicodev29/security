@@ -14,7 +14,8 @@ import java.util.Objects;
 public class CsrfCookieFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         var csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
 
@@ -23,5 +24,6 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+
     }
 }

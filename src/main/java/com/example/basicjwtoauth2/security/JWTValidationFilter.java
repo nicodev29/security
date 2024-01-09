@@ -1,8 +1,8 @@
 package com.example.basicjwtoauth2.security;
 
+import com.example.basicjwtoauth2.service.JWTUserDetailService;
 import com.example.basicjwtoauth2.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @Component
@@ -23,7 +24,8 @@ import java.util.Objects;
 public class JWTValidationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final JwtUserDetail jwtUserDetailService;
+    private final JWTUserDetailService jwtUserDetailService;
+
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_HEADER_BEARER = "Bearer ";
@@ -31,7 +33,7 @@ public class JWTValidationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
+                                    FilterChain filterChain) throws ServletException, IOException {
         final var requestTokenHeader = request.getHeader(AUTHORIZATION_HEADER);
         String username = null;
         String jwt = null;

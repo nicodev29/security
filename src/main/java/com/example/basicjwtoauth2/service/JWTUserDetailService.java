@@ -1,4 +1,4 @@
-package com.example.basicjwtoauth2.security;
+package com.example.basicjwtoauth2.service;
 
 import com.example.basicjwtoauth2.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
@@ -9,12 +9,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @AllArgsConstructor
-public class JwtUserDetail implements UserDetailsService {
+public class JWTUserDetailService implements UserDetailsService {
 
     private final CustomerRepository customerRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.customerRepository.findByEmail(username)

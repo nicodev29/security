@@ -1,4 +1,4 @@
-package com.example.basicjwtoauth2.security;
+package com.example.basicjwtoauth2.component;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +11,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,

@@ -2,7 +2,7 @@ package com.example.basicjwtoauth2.controllers;
 
 import com.example.basicjwtoauth2.models.JWTRequest;
 import com.example.basicjwtoauth2.models.JWTResponse;
-import com.example.basicjwtoauth2.security.JwtUserDetail;
+import com.example.basicjwtoauth2.service.JWTUserDetailService;
 import com.example.basicjwtoauth2.service.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtUserDetail jwtUserDetailService;
+    private final JWTUserDetailService jwtUserDetailService;
     private final JwtService jwtService;
 
 
@@ -33,6 +34,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JWTResponse(token));
     }
 
+    @GetMapping("/authenticate")
     private void authenticate(JWTRequest request) {
         try {
             this.authenticationManager.authenticate(

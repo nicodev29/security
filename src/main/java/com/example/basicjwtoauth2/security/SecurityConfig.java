@@ -1,13 +1,19 @@
 package com.example.basicjwtoauth2.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -16,53 +22,47 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-    private final CustomerUserDetails customerUserDetails;
-    public SecurityConfig(CustomerUserDetails customerUserDetails) {
-        this.customerUserDetails = customerUserDetails;
-    }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/loans","/account").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/balance","/cards").hasAnyAuthority("USER")
-                        .requestMatchers("/about_us", "/welcome").permitAll()
-                        .anyRequest().authenticated())
+    @Autowired
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JWTValidationFilter jwtValidationFilter) throws Exception {
+        http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        var requestHandler = new CsrfTokenRequestAttributeHandler();
+        requestHandler.setCsrfRequestAttributeName("_csrf");
+        http.authorizeHttpRequests(auth ->
+                        auth
+                                .requestMatchers("/loans", "/balance").hasAuthority("USER")
+                                .requestMatchers("/accounts", "/cards").hasAuthority("ADMIN")
+                                .anyRequest().permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
-
-        http.userDetailsService(customerUserDetails);
-
+        http.addFilterAfter(jwtValidationFilter, BasicAuthenticationFilter.class);
+        http.cors(cors -> corsConfigurationSource());
+        http.csrf(csrf -> csrf
+                        .csrfTokenRequestHandler(requestHandler)
+                        .ignoringRequestMatchers("/welcome", "/about_us","/token","/authenticate")
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         return http.build();
     }
 
-
-
     @Bean
-    PasswordEncoder passwordEncoder() {
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence charSequence) {
-                return charSequence.toString();
-            }
-            @Override
-            public boolean matches(CharSequence charSequence, String s) {
-                return true;
-            }
-        };
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
+        var config = new CorsConfiguration();
 
-            var config = new CorsConfiguration();
-            config.setAllowedOrigins(List.of("http://localhost:4200"));
-            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            config.setAllowedHeaders(List.of("*"));
+        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedMethods(List.of("*"));
+        config.setAllowedHeaders(List.of("*"));
 
-            var source = new UrlBasedCorsConfigurationSource();
-            source.registerCorsConfiguration("/**", config);
-            return source;
+        var source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 
     @Bean
