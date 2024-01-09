@@ -6,7 +6,7 @@ insert into customers (email, password) VALUES
 
 
 insert into roles (role_name, description, id_customer) VALUES
-                            ('VIEW_ACCOUNT', 'you cant see this endpoint',1),
-                            ('VIEW_LOANS','you cant see this endpoint' ,1),
-                            ('VIEW_BALANCE', 'you cant see this endpoint',2),
-                            ('VIEW_CARDS','you cant see this endpoint' ,2);
+                            ('ADMIN', 'you cant see this endpoint',1),
+                            ('ADMIN','you cant see this endpoint' ,1),
+                            ('USER', 'you cant see this endpoint',2),
+                            ('USER','you cant see this endpoint' ,2);

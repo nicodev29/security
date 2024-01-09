@@ -2,7 +2,9 @@ package com.example.basicjwtoauth2.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,8 +24,8 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/loans","/account").hasAnyAuthority("VIEW_ACCOUNT", "VIEW_LOANS")
-                        .requestMatchers("/balance","/cards").hasAnyAuthority("VIEW_BALANCE", "VIEW_CARDS")
+                        .requestMatchers("/loans","/account").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/balance","/cards").hasAnyAuthority("USER")
                         .requestMatchers("/about_us", "/welcome").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
@@ -61,6 +63,11 @@ public class SecurityConfig {
             var source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", config);
             return source;
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 
