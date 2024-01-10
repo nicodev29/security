@@ -40,7 +40,7 @@ public class SecurityConfig {
         http.cors(cors -> corsConfigurationSource());
         http.csrf(csrf -> csrf
                         .csrfTokenRequestHandler(requestHandler)
-                        .ignoringRequestMatchers("/welcome", "/about_us","/token","/authenticate")
+                        .ignoringRequestMatchers("/welcome", "/about_us","/api/token","/api/authenticate")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         return http.build();
